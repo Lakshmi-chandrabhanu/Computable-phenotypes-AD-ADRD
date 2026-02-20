@@ -1,0 +1,141 @@
+---
+title: "R_Prac_2"
+author: "Lakshmi Chandrabhanu"
+date: "2026-01-22"
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r}
+library(readxl)
+library(dplyr)
+library(purrr)
+
+file <- "ADC_legacy_final_LCB_Capstone.xlsx"
+sheets <- c("O_Contact", "O_Master_Id", "O_Master_Id_2016_03_29") 
+
+
+codes_all <- c("A1","A2","A3","PO","PR","LP")
+codes_dx1 <- c("PO","PR","LP")
+codes_cdc <- c("PR","A1","PO","LP")
+
+all_data <- map_dfr(sheets, ~ read_excel(file, sheet = .x), .id = "sheet")
+
+Disease_Count <- all_data %>%
+  filter(
+    Cur_Dx1 %in% codes_dx1 |
+      Cur_Dx2 %in% codes_all |
+      Cur_Dx3 %in% codes_all |
+      Cur_Dx4 %in% codes_all |
+      CPC_DX %in% codes_cdc |
+      CPC_NPDx %in% codes_cdc
+  ) %>%
+  distinct(PID) %>% 
+  nrow()
+
+Disease_Count
+
+
+Disease_Count_By_Sheet <- all_data %>%
+  filter(
+    Cur_Dx1 %in% codes_dx1 |
+      Cur_Dx2 %in% codes_all |
+      Cur_Dx3 %in% codes_all |
+      Cur_Dx4 %in% codes_all |
+      CPC_DX %in% codes_cdc |
+      CPC_NPDx %in% codes_cdc
+  ) %>%
+  group_by(sheet) %>%
+  summarise(Disease_Count = n_distinct(PID), .groups = "drop")
+
+Disease_Count_By_Sheet
+```
+```{r}
+library(dplyr)
+FD_count<- "ADC_legacy_final_LCB_Capstone.xlsx"
+sheets <- c("O_Contact", "O_Master_Id", "O_Master_Id_2016_03_29") 
+df <- map_dfr(sheets, ~ read_excel(file, sheet = .x), .id = "sheet")
+
+dx1_codes <- c("DY", "FL", "PI", "FT", "PS", "FV", "MN")
+dx2_codes <- c("AS", "FT", "FL", "PI", "PS")
+dx3_codes <- c("DY", "PS", "FL")
+
+cpc_dx_codes   <- c("FB", "FL", "FT", "FV", "DY")
+cpc_npdx_codes  <- c("PI", "CB", "FT", "MN")
+cpc_20160329  <- c("DY", "FB", "FT", "PS", "FV", "FL")
+
+FD_count <- df %>%
+filter(
+    Cur_Dx1 %in% dx1_codes |
+      Cur_Dx2 %in% dx2_codes |
+      Cur_Dx3 %in% dx3_codes |
+      CPC_DX %in% cpc_dx_codes |
+      CPC_NPDx %in% cpc_npdx_codes |
+      CPC_DX %in% cpc_20160329
+  ) %>%
+  dplyr::distinct(PID) %>%   
+  nrow()
+
+FD_count
+
+```
+```{r}
+
+library(dplyr)
+LBV_count<- "ADC_legacy_final_LCB_Capstone.xlsx"
+sheets <- c("O_Contact", "O_Master_Id", "O_Master_Id_2016_03_29") 
+df2 <- map_dfr(sheets, ~ read_excel(file, sheet = .x), .id = "sheet")
+
+Cur_dx1_codes <- c("LB", "AL", "OL")
+Cur_dx2_codes<- c("LB", "DL")
+Cur_dx3_codes <- c("LB")
+Cur_dx4_codes <- c("LB")
+
+CPC_dx_codes   <- c("AL", "DL", "LB")
+CPC_Npdx_codes  <- c("AL", "DL", "LB", "LL", "LT")
+CPC_20160329    <- c("AL", "DL", "LB")
+
+LBV_count <- df2 |>
+  filter(
+    Cur_Dx1 %in% Cur_dx1_codes |
+    Cur_Dx2 %in% Cur_dx2_codes |
+    Cur_Dx3 %in% Cur_dx3_codes |
+    Cur_Dx4 %in% Cur_dx4_codes |
+    CPC_DX %in% CPC_dx_codes |
+    CPC_NPDx %in% CPC_Npdx_codes |
+    CPC_DX %in% CPC_20160329
+  ) |>
+ distinct(PID) |>  nrow()
+
+LBV_count
+
+```
+```{r}
+library(dplyr)
+library(purrr)
+library(readr)
+library(readxl)
+MCI_Count <- "ADC_legacy_final_LCB_Capstone.xlsx"
+sheets1 <- c("O_Contact", "O_Master_Id", "O_Master_Id_2016_03_29")
+df3 <- map_dfr(sheets1, ~ read_excel(MCI_Count, sheet = .x), .id = "sheet")
+
+Cur_dx1_codes <- c("AM","C1","C2","CO","MU","OM","RM")
+Cur_dx2_codes <- c("AM","FM","CO","C1","C2","VM","RM","PM","OM","NA","MU")
+Cur_dx3_codes <- c("AM","GM","MU","NA","LM","VM")
+
+CPC_Dx_codes  <- c("AM","MU","RM")
+CPC_2016_03_29  <- c("AL","DL","LB")
+
+MCI_Count <- df3 |>
+  dplyr::filter(
+     Cur_Dx1 %in% Cur_dx1_codes |
+      Cur_Dx2 %in% Cur_dx2_codes |
+       Cur_Dx3 %in% Cur_dx3_codes |
+      CPC_DX %in% CPC_Dx_codes |
+      CPC_DX %in% CPC_2016_03_29
+  ) |>
+  dplyr::distinct(PID) |>  
+  nrow()
+
+MCI_Count
+```
