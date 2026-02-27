@@ -19,9 +19,9 @@ codes_all <- c("A1","A2","A3","PO","PR","LP")
 codes_dx1 <- c("PO","PR","LP")
 codes_cdc <- c("PR","A1","PO","LP")
 
-all_data <- map_dfr(sheets, ~ read_excel(file, sheet = .x), .id = "sheet")
+alz_data <- map_dfr(sheets, ~ read_excel(file, sheet = .x), .id = "sheet")
 
-Disease_Count <- all_data %>%
+alz_Disease_Count <- alz_data %>%
   filter(
     Cur_Dx1 %in% codes_dx1 |
       Cur_Dx2 %in% codes_all |
@@ -33,10 +33,10 @@ Disease_Count <- all_data %>%
   distinct(PID) %>% 
   nrow()
 
-Disease_Count
+alz_Disease_Count
 
 
-Disease_Count_By_Sheet <- all_data %>%
+alz_Disease_Count_By_Sheet <- alz_data %>%
   filter(
     Cur_Dx1 %in% codes_dx1 |
       Cur_Dx2 %in% codes_all |
@@ -46,9 +46,9 @@ Disease_Count_By_Sheet <- all_data %>%
       CPC_NPDx %in% codes_cdc
   ) %>%
   group_by(sheet) %>%
-  summarise(Disease_Count = n_distinct(PID), .groups = "drop")
+  summarise(alz_Disease_Count = n_distinct(PID), .groups = "drop")
 
-Disease_Count_By_Sheet
+alz_Disease_Count_By_Sheet
 ```
 ```{r}
 library(dplyr)
@@ -139,3 +139,4 @@ MCI_Count <- df3 |>
 
 MCI_Count
 ```
+
